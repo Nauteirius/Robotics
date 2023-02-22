@@ -7,6 +7,6 @@ pi_pwm = GPIO.PWM(12, 1000)
 pi_pwm.start(1)
 for i in range(1,1000):
     pi_pwm.ChangeFrequency(i)
-    time.sleep(0.1)
+    time.sleep(0.01)
 pi_pwm.stop()
 GPIO.cleanup()

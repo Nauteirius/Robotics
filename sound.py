@@ -1,7 +1,7 @@
 from time import sleep
 import os
 import time
-import RPi.GPIO
+from RPi import GPIO
 
 
 GPIO.setmode(GPIO.BCM)  # choose BCM or BOARD numbering schemes. I use BCM

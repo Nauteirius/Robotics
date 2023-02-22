@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import wave,struct,math
-waveFile = wave.open("/home/pi/Music/second_stupidest_birthday_ever.wav", "rb")
+waveFile = wave.open("/home/pi/source/Robotics/example1.wav", "rb")
 frames   = waveFile.getnframes()   # total number of frames / samples
 rate     = waveFile.getframerate() # number of frames / samples per second (should be 44100 Hz (44.1 kHz) for CD-quality audio)
 length   = frames / int(rate)      # length in seconds

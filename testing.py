@@ -1,12 +1,14 @@
 import RPi.GPIO as GPIO
 import time
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 GPIO.setup(12,GPIO.OUT)
+pi_pwm = GPIO.PWM(12, 1000)
+pi_pwm.start(0)
 for i in range(100):
     print("LED on")
-    GPIO.output(12,GPIO.HIGH)
+    pi_pwm.ChangeFrequency(0)
     time.sleep(1)
     print("LED off")
-    GPIO.output(12,GPIO.LOW)
+    pi_pwm.ChangeFrequency(100)
     time.sleep(1)

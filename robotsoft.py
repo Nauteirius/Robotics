@@ -1,3 +1,4 @@
+import time
 import pyaudio
 import wave
 import replicate
@@ -133,14 +134,14 @@ def sendToModule():
     myobj.save("play.mp3")
 
     print("done")
-    os.system("mpg321 play.mp3")
+    os.system("mpg321 -a plughw:2,0 play.mp3")
 
 
 
 
 
 # ustalenie stałych
-CHUNK = 1024
+CHUNK = 2**12
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
@@ -150,7 +151,7 @@ WAIT_TIME = 0.2  # czas oczekiwania na kolejny sygnał powyżej progu
 
 # inicjalizacja obiektów PyAudio
 p = pyaudio.PyAudio()
-stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, input_device_index=1, frames_per_buffer=CHUNK)
 
 print("Rozpoczynam nasłuchiwanie...")
 
@@ -189,7 +190,8 @@ while True:
                 wf.close()
                 # wyczyszczenie bufora
                 frames = []
-                sendToModule()
+                os.system("mpg321 -a plughw:2,0 nagranie.wav")
+                #sendToModule()
         else:
             silence_count = 0
     else:

@@ -6,11 +6,24 @@ import openai
 import os
 import re
 from gtts import gTTS
+import random
+from PIL import Image
+from luma.core.interface.serial import i2c
+from luma.oled.device import sh1106
 
 from dotenv import load_dotenv
 load_dotenv()
 OAIKEY = os.getenv('OAIkey')
 APITOKEN=os.getenv('Apitoken')
+
+# OLED Initialization
+serial = i2c(port=1, address=0x3C)
+device = sh1106(serial)
+
+def displayImage(name):
+    image = Image.open(name).convert('1')
+    image = image.resize((128, 64))
+    device.display(image)
 
 def sendToModule():
     import os
@@ -25,7 +38,7 @@ def sendToModule():
     # https://replicate.com/openai/whisper/versions/30414ee7c4fffc37e260fcab7842b5be470b9b840f2b608f5baa9bbef9a259ed#input
     inputs = {
         # Audio file
-        'audio': open("nagranie.wav", "rb"),#D:\\stu\\prog\\python\\bot\\
+        'audio': open("nagranie.wav", "rb"),
 
         # Choose a Whisper model.
         'model': "large",
@@ -86,8 +99,25 @@ def sendToModule():
 
 
     #import re
+    keywords = re.compile('Bocie|bocie')
+    if not keywords.search(raw_prompt):
+        displayImage("default.jpg")
+        return #czy zadziala
     prompt = re.sub('^(.*Bocie)',"", raw_prompt, count=1, flags=re.IGNORECASE)
     print ("prompt: ",prompt)
+    keywords = re.compile('Zaśmiej się|zaśmiej się')
+    keywords1 = re.compile('Puść muzykę|puść muzykę')
+    if keywords.search(prompt):
+        displayImage("laugh.jpg")
+        os.system("mpg321 -a plughw:2,0 laugh.mp3")
+        return
+    elif keywords1.search(prompt):
+        rng = random.ranint(1, 6)
+        rng = str(rng)
+        displayImage("hearth"+rng+".jpg")
+        os.system("mpg321 -a plughw:2,0 soul" + rng + ".mp3")
+        return
+
 
     # keysList = list(output.keys())
     # print(keysList)
@@ -108,7 +138,7 @@ def sendToModule():
         for choice in response.choices:
             reply= choice.text[:min(2000, len(choice.text))]
 
-    #print("reply: ",reply)
+    print("reply: ",reply)
 
 
 
@@ -130,7 +160,7 @@ def sendToModule():
     # have a high speed
     myobj = gTTS(text=reply, lang=language, slow=False)
 
-
+    displayImage("talk.jpg")
     myobj.save("play.mp3")
 
     print("done")
@@ -146,13 +176,16 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 10
-THRESHOLD = 400  # wartość progowa amplitudy, powyżej której nagrywamy
-WAIT_TIME = 0.2  # czas oczekiwania na kolejny sygnał powyżej progu
+THRESHOLD = 1680  # wartość progowa amplitudy, powyżej której nagrywamy
+WAIT_TIME = 0.33  # czas oczekiwania na kolejny sygnał powyżej progu
+
+
 
 # inicjalizacja obiektów PyAudio
 p = pyaudio.PyAudio()
 stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, input_device_index=1, frames_per_buffer=CHUNK)
 
+displayImage("default.jpg")
 print("Rozpoczynam nasłuchiwanie...")
 
 # zmienne pomocnicze
@@ -169,6 +202,7 @@ while True:
     amplitude = max(audio_data)
 
     if not recording and amplitude > THRESHOLD:
+        displayImage("listening.jpg")
         print("Wykryto sygnał powyżej progu. Rozpoczynam nagrywanie...")
         recording = True
 
@@ -179,6 +213,7 @@ while True:
             silence_count += 1
 
             if silence_count * WAIT_TIME >= RECORD_SECONDS:
+                displayImage("processing.jpg")
                 print("Przestałem nagrywać.")
                 recording = False
                 # zapis do pliku
@@ -190,8 +225,8 @@ while True:
                 wf.close()
                 # wyczyszczenie bufora
                 frames = []
-                os.system("mpg321 -a plughw:2,0 nagranie.wav")
-                #sendToModule()
+                #os.system("mpg321 -a plughw:2,0 nagranie.wav")
+                sendToModule()
         else:
             silence_count = 0
     else:

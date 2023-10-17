@@ -236,3 +236,73 @@ while True:
 stream.stop_stream()
 stream.close()
 p.terminate()
+
+# Warstwa Abstrakcji - 1: Wejście Audio
+# --------------------------------------
+# initialize_audio():
+#     Inicjalizuj urządzenie audio
+#     Zwróć obiekt PyAudio
+
+# start_audio_stream():
+#     Rozpocznij strumień audio z urządzenia wejściowego
+
+# stop_audio_stream():
+#     Zatrzymaj strumień audio
+#     Zwolnij zasoby urządzenia audio
+
+# Warstwa Abstrakcji - 2: Nagrywanie Dźwięku
+# -----------------------------------------
+# start_recording():
+#     Rozpocznij nagrywanie dźwięku, oczekując na przekroczenie progu amplitudy
+
+# stop_recording():
+#     Zakończ nagrywanie dźwięku po określonym czasie ciszy
+#     Zapisz dane audio do pliku
+
+# Warstwa Abstrakcji - 3: Replicate (Przetwarzanie Mowy)
+# ---------------------------------------------------
+# initialize_replicate():
+#     Inicjalizuj połączenie z Replicate
+#     Zwróć model i wersję
+
+# process_audio_to_text(audio_file):
+#     Przetwórz dane audio z pliku na tekst za pomocą Replicate
+#     Zwróć tekst
+
+# Warstwa Abstrakcji - 4: Reakcje na Polecenia
+# ------------------------------------------
+# process_text(text):
+#     Analizuj tekst i reaguj na konkretne wyrażenia
+
+# Warstwa Abstrakcji - 5: Komunikacja z GPT-3
+# ----------------------------------------
+# initialize_openai():
+#     Inicjalizuj połączenie z OpenAI
+#     Zwróć konfigurację silnika
+
+# generate_response(prompt):
+#     Prześlij tekst do silnika GPT-3 w celu generowania odpowiedzi
+#     Zwróć odpowiedź
+
+# Warstwa Abstrakcji - 6: Konwersja Tekstu na Mowę
+# -------------------------------------------
+# text_to_speech(text):
+#     Konwertuj tekst na mowę za pomocą gTTS
+#     Odtwórz mowę
+
+# Warstwa Abstrakcji - 7: Wyświetlanie na Ekranie OLED
+# ---------------------------------------------
+# initialize_oled():
+#     Inicjalizuj połączenie z ekranem OLED
+
+# display_image(image_file):
+#     Wyświetl obraz na ekranie OLED
+
+# Warstwa Abstrakcji - 8: Główna Pętla
+# ---------------------------------
+# main_loop():
+#     Obejmuj główną pętlę
+#     Nasłuchuj dźwięku
+#     Reaguj na polecenia
+#     Generuj odpowiedzi
+#     Zapewnij nieskończoną interakcję
